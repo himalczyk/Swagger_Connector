@@ -1,6 +1,7 @@
 #main stuff happens here, create requests, initialize the object and methods
 import requests
 import json
+from config import password, username, dev_eu_url
 
 class MakeConnection():
     
@@ -13,7 +14,8 @@ class MakeConnection():
         
     def make_request(self, uri, method, body=None):
         headers = {
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "Content-Type": "application/json"
         }
 
         if body:
@@ -33,13 +35,17 @@ class MakeConnection():
             raise Exception(f"{response.status_code}: {response.text}")
 
         response_data = response.json()
-        assert 'result' in response_data
+        assert 'token' in response_data
 
-        return response_data['result']
+        return response_data
         
     def getToken(self):
         uri = 'api/v1/auth/login'
         method = 'POST'
-        body = {}
+        body = {  
+                "ameliaUrl": dev_eu_url,
+                "password": password,
+                "username": username
+                }
         
         return self.make_request(uri, method, body)
